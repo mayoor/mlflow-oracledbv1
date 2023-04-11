@@ -131,7 +131,7 @@ def upgrade():
 
         metric_value_col = Column(
             "value",
-            Float(precision=53).with_variant(oracle.FLOAT(binary_precision=176), "oracle"),
+            Float(precision=53).with_variant(oracle.FLOAT(binary_precision=126), "oracle"),
             nullable=False,
         )
 
