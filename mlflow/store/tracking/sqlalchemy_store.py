@@ -15,7 +15,7 @@ from sqlalchemy.future import select
 from mlflow.entities import RunTag, Metric
 from mlflow.entities.lifecycle_stage import LifecycleStage
 from mlflow.store.tracking import SEARCH_MAX_RESULTS_DEFAULT, SEARCH_MAX_RESULTS_THRESHOLD
-from mlflow.store.db.db_types import MYSQL, MSSQL
+from mlflow.store.db.db_types import MYSQL, MSSQL, ORACLE
 import mlflow.store.db.utils
 from mlflow.store.tracking.dbmodels.models import (
     SqlExperiment,
@@ -202,7 +202,7 @@ class SqlAlchemyStore(AbstractStore):
         try:
             self._set_zero_value_insertion_for_autoincrement_column(session)
             session.execute(
-                sql.text(f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({values});")
+                sql.text(f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({values}){';' if session.db_type != ORACLE else ''}")
             )
         finally:
             self._unset_zero_value_insertion_for_autoincrement_column(session)
