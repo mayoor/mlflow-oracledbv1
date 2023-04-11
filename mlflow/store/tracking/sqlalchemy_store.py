@@ -202,7 +202,7 @@ class SqlAlchemyStore(AbstractStore):
         try:
             self._set_zero_value_insertion_for_autoincrement_column(session)
             session.execute(
-                sql.text(f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({values}){';' if session.db_type != ORACLE else ''}")
+                sql.text(f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({values}){';' if self.db_type != ORACLE else ''}")
             )
         finally:
             self._unset_zero_value_insertion_for_autoincrement_column(session)
