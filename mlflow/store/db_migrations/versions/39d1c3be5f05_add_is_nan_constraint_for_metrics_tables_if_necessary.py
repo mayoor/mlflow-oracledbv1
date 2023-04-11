@@ -24,6 +24,11 @@ def upgrade():
     # To ensure that a check constraint is always present on the `is_nan` column in the
     # `latest_metrics` table, we perform an `alter_column` and explicitly set `create_constraint`
     # to `True`
+    bind = op.get_bind()
+    if bind.engine.name == "oracle":
+        # Gives `ORA-01442: column to be modified to NOT NULL is already NOT NULL`
+        return
+
     with op.batch_alter_table("latest_metrics") as batch_op:
         batch_op.alter_column(
             "is_nan", type_=sa.types.Boolean(create_constraint=True), nullable=False

@@ -124,10 +124,21 @@ def upgrade():
     _describe_migration_if_necessary(session)
     all_latest_metrics = _get_latest_metrics_for_runs(session=session)
 
+    metric_value_col = Column("value", Float(precision=53), nullable=False)
+
+    if bind.engine.name == "oracle":
+        from sqlalchemy.dialects import oracle
+
+        metric_value_col = Column(
+            "value",
+            Float(precision=53).with_variant(oracle.FLOAT(binary_precision=126), "oracle"),
+            nullable=False,
+        )
+
     op.create_table(
         SqlLatestMetric.__tablename__,
         Column("key", String(length=250)),
-        Column("value", Float(precision=53), nullable=False),
+        metric_value_col,
         Column("timestamp", BigInteger, default=lambda: int(time.time())),
         Column("step", BigInteger, default=0, nullable=False),
         Column("is_nan", Boolean, default=False, nullable=False),

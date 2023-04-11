@@ -21,13 +21,22 @@ def upgrade():
     Enlarge the maximum param value length to 500.
     """
     with op.batch_alter_table("params") as batch_op:
-        batch_op.alter_column(
-            "value",
-            existing_type=sa.String(250),
-            type_=sa.String(500),
-            existing_nullable=False,
-            nullable=False,
-        )
+        bind = op.get_bind()
+        if bind.engine.name == "oracle":
+            # Gives `ORA-01442: column to be modified to NOT NULL is already NOT NULL`
+            batch_op.alter_column(
+                "value",
+                existing_type=sa.String(250),
+                type_=sa.String(500),
+            )
+        else:
+            batch_op.alter_column(
+                "value",
+                existing_type=sa.String(250),
+                type_=sa.String(500),
+                existing_nullable=False,
+                nullable=False,
+            )
 
 
 def downgrade():

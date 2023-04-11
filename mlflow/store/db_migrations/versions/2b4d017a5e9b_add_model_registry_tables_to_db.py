@@ -47,7 +47,7 @@ def upgrade():
 
     op.create_table(
         SqlRegisteredModel.__tablename__,
-        Column("name", String(256), unique=True, nullable=False),
+        Column("name", String(256), nullable=False), # name is unique as it is a primary key
         Column("creation_time", BigInteger, default=lambda: int(time.time() * 1000)),
         Column("last_updated_time", BigInteger, nullable=True, default=None),
         Column("description", String(5000), nullable=True),
