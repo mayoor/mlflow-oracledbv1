@@ -10,6 +10,7 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     Boolean,
     Index,
+    Identity
 )
 from mlflow.entities import (
     Experiment,
@@ -53,7 +54,7 @@ class SqlExperiment(Base):
 
     __tablename__ = "experiments"
 
-    experiment_id = Column(Integer, autoincrement=True)
+    experiment_id = Column(Integer, Identity(start=0, cycle=True), autoincrement=True)
     """
     Experiment ID: `Integer`. *Primary Key* for ``experiment`` table.
     """
