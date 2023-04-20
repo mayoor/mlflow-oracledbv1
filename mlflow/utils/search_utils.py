@@ -22,7 +22,7 @@ from mlflow.entities import RunInfo
 from mlflow.entities.model_registry.model_version_stages import STAGE_DELETED_INTERNAL
 from mlflow.exceptions import MlflowException
 from mlflow.protos.databricks_pb2 import INVALID_PARAMETER_VALUE
-from mlflow.store.db.db_types import MYSQL, MSSQL, SQLITE, POSTGRES
+from mlflow.store.db.db_types import MYSQL, MSSQL, SQLITE, POSTGRES, ORACLE
 
 import math
 
@@ -222,6 +222,7 @@ class SearchUtils:
             SQLITE: comparison_func,
             MSSQL: mssql_comparison_func,
             MYSQL: mysql_comparison_func,
+            ORACLE: comparison_func
         }[dialect]
 
     @staticmethod
