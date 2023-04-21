@@ -83,7 +83,7 @@ def _all_tables_exist(engine):
 
 
 def _initialize_tables(engine):
-    _logger.info("Creating initial MLflow database tables...")
+    _logger.info(f"Creating initial MLflow database tables...for dialect {engine.dialect.name}")
     if engine.dialect.name == ORACLE:
         _logger.info("Dialect is oracle, setting experiment column to sequence")
         SqlExperiment.experiment_id = sqlalchemy.Column(
