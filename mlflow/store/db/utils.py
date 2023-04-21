@@ -40,7 +40,7 @@ from mlflow.store.model_registry.dbmodels.models import (
     SqlRegisteredModelAlias,
 )
 from mlflow.protos.databricks_pb2 import BAD_REQUEST, INTERNAL_ERROR, TEMPORARILY_UNAVAILABLE
-from mlflow.store.db.db_types import SQLITE
+from mlflow.store.db.db_types import SQLITE, ORACLE
 from mlflow.environment_variables import (
     MLFLOW_SQLALCHEMYSTORE_POOL_SIZE,
     MLFLOW_SQLALCHEMYSTORE_POOL_RECYCLE,
@@ -84,6 +84,11 @@ def _all_tables_exist(engine):
 
 def _initialize_tables(engine):
     _logger.info("Creating initial MLflow database tables...")
+    if engine.dialect.name == ORACLE:
+        _logger.info("Dialect is oracle, setting experiment column to sequence")
+        SqlExperiment.experiment_id = sqlalchemy.Column(
+            sqlalchemy.Integer, sqlalchemy.Sequence("EXPERIMENT_ID_SEQ")
+        )
     InitialBase.metadata.create_all(engine)
     _upgrade_db(engine)
 

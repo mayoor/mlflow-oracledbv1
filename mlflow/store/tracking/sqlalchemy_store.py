@@ -146,20 +146,6 @@ class SqlAlchemyStore(AbstractStore):
             with self.ManagedSessionMaker() as session:
                 self._create_default_experiment(session)
 
-        if self.db_type == ORACLE:
-            # Create a sequence object
-            # Add trigger to include experiement id from seq.netval before inserting
-            import mlflow.store.tracking.oracle_experiment_table_ddl as ora_ddl
-            with self.engine.connect() as connection:
-                try:
-                    connection.execute(sqlalchemy.text(ora_ddl.EXPERIMENT_ID_AUTO_INC_SEQUENCE))
-                except:
-                    _logger("Sequence already exists")
-                connection.execute(sqlalchemy.DDL(ora_ddl.EXPERIMENT_ID_AUTO_INC_TIGGER))
-                
-
-            
-
     def _get_dialect(self):
         return self.engine.dialect.name
 

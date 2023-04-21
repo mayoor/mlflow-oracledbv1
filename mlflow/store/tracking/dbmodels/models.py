@@ -10,7 +10,6 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     Boolean,
     Index,
-    Identity
 )
 from mlflow.entities import (
     Experiment,
