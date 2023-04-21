@@ -152,6 +152,19 @@ class SqlAlchemyStore(AbstractStore):
     def _dispose_engine(self):
         self.engine.dispose()
 
+    def _setup_oracle_experiment_table(self, session):
+        if self.db_type == ORACLE:
+            # Create a sequence object
+            # Add trigger to include experiement id from seq.netval before inserting
+            import mlflow.store.tracking.oracle_experiment_table_ddl as ora_ddl
+            try:
+                # Create Sequence object if it does not exist
+                session.execute(sqlalchemy.text(ora_ddl.EXPERIMENT_ID_AUTO_INC_SEQUENCE))
+            except:
+                _logger("Sequence already exists")
+            # Create trigger to insert experiment_id
+            session.execute(sqlalchemy.DDL(ora_ddl.EXPERIMENT_ID_AUTO_INC_TIGGER))         
+
     def _set_zero_value_insertion_for_autoincrement_column(self, session):
         if self.db_type == MYSQL:
             # config letting MySQL override default
@@ -180,6 +193,7 @@ class SqlAlchemyStore(AbstractStore):
         """
         table = SqlExperiment.__tablename__
         creation_time = get_current_time_millis()
+        self._setup_oracle_experiment_table(session)
         default_experiment = {
             SqlExperiment.experiment_id.name: int(SqlAlchemyStore.DEFAULT_EXPERIMENT_ID),
             SqlExperiment.name.name: Experiment.DEFAULT_EXPERIMENT_NAME,
