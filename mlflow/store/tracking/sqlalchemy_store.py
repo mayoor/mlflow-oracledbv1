@@ -161,7 +161,7 @@ class SqlAlchemyStore(AbstractStore):
                 # Create Sequence object if it does not exist
                 session.execute(sqlalchemy.text(ora_ddl.EXPERIMENT_ID_AUTO_INC_SEQUENCE))
             except:
-                _logger("Sequence already exists")
+                _logger.info("Sequence already exists")
             # Create trigger to insert experiment_id
             session.execute(sqlalchemy.DDL(ora_ddl.EXPERIMENT_ID_AUTO_INC_TIGGER))         
 
