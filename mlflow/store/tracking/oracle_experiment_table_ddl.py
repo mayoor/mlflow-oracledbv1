@@ -9,6 +9,6 @@ BEGIN
     IF :NEW.experiment_id IS NULL THEN
         :NEW.experiment_id := experiment_id_seq.nextval;
     END IF;
-END
+END;
 """
 
